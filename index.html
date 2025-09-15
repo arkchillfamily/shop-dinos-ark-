@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Dinos ARK</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+            font-family: 'Orbitron', monospace;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .background-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background-image: 
+                radial-gradient(circle at 20% 50%, #ffd700 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #ff6b6b 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, #4ecdc4 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px, 200px 200px;
+            animation: float 20s infinite linear;
+            z-index: -1;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            margin-bottom: 1rem;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            color: #a0a0ff;
+            margin-bottom: 2rem;
+        }
+        
+        .currency-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            border: 2px solid #ffd700;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
+        
+        .golden-snitch {
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, #ffd700, #ffed4e);
+            border-radius: 50%;
+            position: relative;
+            animation: rotate 3s linear infinite;
+        }
+        
+        .golden-snitch::before,
+        .golden-snitch::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 8px;
+            height: 3px;
+            background: #fff;
+            transform: translateY(-50%);
+            border-radius: 2px;
+        }
+        
+        .golden-snitch::before {
+            left: -6px;
+            transform: translateY(-50%) rotate(20deg);
+        }
+        
+        .golden-snitch::after {
+            right: -6px;
+            transform: translateY(-50%) rotate(-20deg);
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .categories {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .category-card {
+            background: linear-gradient(135deg, rgba(26, 26, 62, 0.8), rgba(45, 27, 78, 0.6));
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700);
+            border-radius: 22px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .category-card:hover::before {
+            opacity: 0.5;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .category-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+        
+        .level-225 { color: #4ecdc4; }
+        .level-450 { color: #ff6b6b; }
+        .shiny { 
+            background: linear-gradient(45deg, #ffd700, #ff69b4, #00ff00, #ffd700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbow 3s linear infinite;
+        }
+        
+        @keyframes rainbow {
+            0% { filter: hue-rotate(0deg); }
+            100% { filter: hue-rotate(360deg); }
+        }
+        
+        .dino-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .dino-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dino-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(10px);
+        }
+        
+        .petit { border-left-color: #4ecdc4; }
+        .moyen { border-left-color: #ffd700; }
+        .special { border-left-color: #ff6b6b; }
+        .moros { border-left-color: #9b59b6; }
+        
+        .dino-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .dino-price {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #ffd700;
+        }
+        
+        .price-snitch {
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, #ffd700, #ffed4e);
+            border-radius: 50%;
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+        
+        .legend {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .legend h3 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .legend-color {
+            width: 20px;
+            height: 4px;
+            border-radius: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 2.5rem; }
+            .categories { grid-template-columns: 1fr; }
+            .container { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-pattern"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1 class="title">SHOP DINOS ARK</h1>
+            <p class="subtitle">Découvrez notre collection exclusive de dinosaures</p>
+            <div class="currency-display">
+                <div class="golden-snitch"></div>
+                <span>Prix en Vifs d'Or</span>
+                <div class="golden-snitch"></div>
+            </div>
+        </div>
+        
+        <div class="categories">
+            <div class="category-card">
+                <h2 class="category-title level-225">Dinos Level 225</h2>
+                <div class="dino-list">
+                    <div class="dino-item petit">
+                        <span class="dino-name">🦖 Petit / Épaule</span>
+                        <div class="dino-price">
+                            <span>500</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item moyen">
+                        <span class="dino-name">🦕 Moyen</span>
+                        <div class="dino-price">
+                            <span>750</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item special">
+                        <span class="dino-name">🐉 Spécial</span>
+                        <div class="dino-price">
+                            <span>1 500</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <h2 class="category-title level-450">Dinos Level 450</h2>
+                <div class="dino-list">
+                    <div class="dino-item petit">
+                        <span class="dino-name">🦖 Petit / Épaule</span>
+                        <div class="dino-price">
+                            <span>750</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item moyen">
+                        <span class="dino-name">🦕 Moyen</span>
+                        <div class="dino-price">
+                            <span>1 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item special">
+                        <span class="dino-name">🐉 Spécial</span>
+                        <div class="dino-price">
+                            <span>2 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item moros">
+                        <span class="dino-name">💀 Moros</span>
+                        <div class="dino-price">
+                            <span>3 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card">
+                <h2 class="category-title shiny">Dinos Shiny ✨</h2>
+                <div class="dino-list">
+                    <div class="dino-item petit">
+                        <span class="dino-name">🦖✨ Petit / Épaule</span>
+                        <div class="dino-price">
+                            <span>1 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item moyen">
+                        <span class="dino-name">🦕✨ Moyen</span>
+                        <div class="dino-price">
+                            <span>2 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item special">
+                        <span class="dino-name">🐉✨ Spécial</span>
+                        <div class="dino-price">
+                            <span>3 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                    <div class="dino-item moros">
+                        <span class="dino-name">💀✨ Moros</span>
+                        <div class="dino-price">
+                            <span>4 000</span>
+                            <div class="price-snitch"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3>🔍 Légende des Catégories</h3>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <div class="legend-color petit" style="background-color: #4ecdc4;"></div>
+                    <span>Petit / Épaule</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color moyen" style="background-color: #ffd700;"></div>
+                    <span>Moyen</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color special" style="background-color: #ff6b6b;"></div>
+                    <span>Spécial</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color moros" style="background-color: #9b59b6;"></div>
+                    <span>Moros</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Animation au clic sur les éléments
+        document.querySelectorAll('.dino-item').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95) translateX(10px)';
+                setTimeout(() => {
+                    this.style.transform = 'translateX(10px)';
+                }, 150);
+                
+                // Animation des vifs d'or
+                const snitch = this.querySelector('.price-snitch');
+                snitch.style.animation = 'none';
+                setTimeout(() => {
+                    snitch.style.animation = 'bounce 0.5s ease-out 3';
+                }, 10);
+            });
+        });
+        
+        // Animation de survol améliorée
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) rotateX(5deg)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) rotateX(0deg)';
+            });
+        });
+        
+        // Effet de particules au clic
+        function createParticle(x, y) {
+            const particle = document.createElement('div');
+            particle.style.position = 'fixed';
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            particle.style.width = '6px';
+            particle.style.height = '6px';
+            particle.style.backgroundColor = '#ffd700';
+            particle.style.borderRadius = '50%';
+            particle.style.pointerEvents = 'none';
+            particle.style.zIndex = '1000';
+            document.body.appendChild(particle);
+            
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 50 + Math.random() * 50;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity;
+            
+            let posX = x;
+            let posY = y;
+            let opacity = 1;
+            
+            const animate = () => {
+                posX += vx * 0.02;
+                posY += vy * 0.02;
+                opacity -= 0.02;
+                
+                particle.style.left = posX + 'px';
+                particle.style.top = posY + 'px';
+                particle.style.opacity = opacity;
+                
+                if (opacity > 0) {
+                    requestAnimationFrame(animate);
+                } else {
+                    document.body.removeChild(particle);
+                }
+            };
+            
+            animate();
+        }
+        
+        document.querySelectorAll('.dino-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                for (let i = 0; i < 8; i++) {
+                    setTimeout(() => {
+                        createParticle(
+                            e.clientX + (Math.random() - 0.5) * 40,
+                            e.clientY + (Math.random() - 0.5) * 40
+                        );
+                    }, i * 50);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
