@@ -500,6 +500,7 @@
             opacity: 1;
         }
         
+        
         /* Configuration Discord visible */
         .discord-config {
             margin-bottom: 2rem;
@@ -530,6 +531,7 @@
             width: 100%;
             font-size: 0.9rem;
         }
+        
         
         @media (max-width: 768px) {
             .title { font-size: 2.5rem; }
@@ -573,14 +575,7 @@
                 <div class="golden-snitch"></div>
             </div>
             
-            <!-- Configuration Discord -->
-            <div class="discord-config">
-                <h4>🔗 Configuration Discord</h4>
-                <p>Entrez votre URL de webhook Discord pour recevoir les commandes automatiquement</p>
-                <input type="text" id="webhookUrl" class="webhook-input" 
-                       placeholder="https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo"
-                       value="">
-            </div>
+
         </div>
         
         <div class="categories">
@@ -737,24 +732,14 @@
     </div>
     
     <script>
+        // ⚠️ CONFIGURATION DISCORD WEBHOOK ⚠️
+        // Remplacez cette URL par votre webhook Discord
+        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo';
+        
         // Variables pour le modal
         const modal = document.getElementById('ticketModal');
         const closeBtn = document.querySelector('.close');
         const ticketForm = document.getElementById('ticketForm');
-        const webhookInput = document.getElementById('webhookUrl');
-        
-        // Sauvegarder l'URL webhook dans le localStorage
-        webhookInput.addEventListener('change', function() {
-            localStorage.setItem('discordWebhook', this.value);
-        });
-        
-        // Charger l'URL webhook sauvegardée
-        window.addEventListener('load', function() {
-            const savedWebhook = localStorage.getItem('discordWebhook');
-            if (savedWebhook) {
-                webhookInput.value = savedWebhook;
-            }
-        });
         
         // Animation au clic sur les éléments + ouverture modal
         document.querySelectorAll('.dino-item').forEach(item => {
@@ -810,9 +795,8 @@
             e.preventDefault();
             
             // Vérifier si le webhook est configuré
-            const webhookUrl = webhookInput.value.trim();
-            if (!webhookUrl) {
-                showNotification('⚠️ Veuillez configurer votre webhook Discord', 'error');
+            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('VOTRE_WEBHOOK')) {
+                showNotification('⚠️ Webhook Discord non configuré dans le code', 'error');
                 return;
             }
             
@@ -833,7 +817,7 @@
             };
             
             try {
-                await sendTicketToDiscord(formData, webhookUrl);
+                await sendTicketToDiscord(formData);
                 
                 // Succès
                 showNotification('✅ Ticket créé avec succès !', 'success');
@@ -852,4 +836,59 @@
         });
         
         // Fonction pour envoyer le ticket à Discord
-        async function sendTicketTo
+        async function sendTicketToDiscord(data) {
+            const embed = {
+                title: "🎫 Nouveau Ticket - Shop Dinos ARK",
+                color: 0xFFD700,
+                fields: [
+                    {
+                        name: "🎮 Joueur",
+                        value: data.discordName,
+                        inline: true
+                    },
+                    {
+                        name: "🦖 Dinosaure",
+                        value: data.dinoName,
+                        inline: true
+                    },
+                    {
+                        name: "💰 Prix",
+                        value: data.dinoPrice,
+                        inline: true
+                    }
+                ],
+                thumbnail: {
+                    url: "https://i.imgur.com/dino-icon.png"
+                },
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: "Shop Dinos ARK • Ticket automatique"
+                }
+            };
+            
+            if (data.additionalInfo) {
+                embed.fields.push({
+                    name: "📝 Informations supplémentaires",
+                    value: data.additionalInfo,
+                    inline: false
+                });
+            }
+            
+            const payload = {
+                username: "🦖 Shop Dinos ARK",
+                avatar_url: "https://i.imgur.com/ark-logo.png",
+                embeds: [embed]
+            };
+            
+            const response = await fetch(DISCORD_WEBHOOK_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            
+            if (!response.ok) {
+                throw new Error('Erreur webhook Discord');
+            }
+        }
