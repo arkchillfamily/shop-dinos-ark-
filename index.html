@@ -211,6 +211,27 @@
             border-left: 4px solid;
             transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+        }
+        
+        .dino-item::after {
+            content: '🎫 Cliquez pour commander';
+            position: absolute;
+            right: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 215, 0, 0.2);
+            color: #ffd700;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .dino-item:hover::after {
+            opacity: 1;
         }
         
         .dino-item:hover {
@@ -282,10 +303,260 @@
             border-radius: 2px;
         }
         
+        /* Styles pour le modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal.show {
+            opacity: 1;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(26, 26, 62, 0.95), rgba(45, 27, 78, 0.95));
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            border: 2px solid #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            position: relative;
+            transform: translateY(-50px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s;
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+        }
+        
+        .close:hover {
+            color: #ffd700;
+        }
+        
+        .modal h2 {
+            color: #ffd700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #a0a0ff;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        .form-group input[readonly] {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #ffd700;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            border-radius: 15px;
+            color: #000;
+            font-weight: 700;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
+        }
+        
+        .submit-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .btn-loading {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid #000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Styles pour les notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 2000;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            max-width: 350px;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border-left: 4px solid #2e7d32;
+        }
+        
+        .notification.error {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            border-left: 4px solid #c62828;
+        }
+        
+        .notification-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+        }
+        
+        /* Configuration Discord visible */
+        .discord-config {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255, 215, 0, 0.1);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            text-align: center;
+        }
+        
+        .discord-config h4 {
+            color: #ffd700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .discord-config p {
+            color: #a0a0ff;
+            font-size: 0.9rem;
+        }
+        
+        .webhook-input {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            width: 100%;
+            font-size: 0.9rem;
+        }
+        
         @media (max-width: 768px) {
             .title { font-size: 2.5rem; }
             .categories { grid-template-columns: 1fr; }
             .container { padding: 1rem; }
+            
+            .modal-content {
+                margin: 10% auto;
+                width: 95%;
+                padding: 1.5rem;
+            }
+            
+            .notification {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                max-width: none;
+                transform: translateY(-100px);
+            }
+            
+            .notification.show {
+                transform: translateY(0);
+            }
+            
+            .dino-item::after {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -300,6 +571,15 @@
                 <div class="golden-snitch"></div>
                 <span>Prix en Vifs d'Or</span>
                 <div class="golden-snitch"></div>
+            </div>
+            
+            <!-- Configuration Discord -->
+            <div class="discord-config">
+                <h4>🔗 Configuration Discord</h4>
+                <p>Entrez votre URL de webhook Discord pour recevoir les commandes automatiquement</p>
+                <input type="text" id="webhookUrl" class="webhook-input" 
+                       placeholder="https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo"
+                       value="">
             </div>
         </div>
         
@@ -423,8 +703,60 @@
         </div>
     </div>
     
+    <!-- Modal pour le ticket -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>🎫 Créer un Ticket</h2>
+            <form id="ticketForm">
+                <div class="form-group">
+                    <label for="discordName">🎮 Nom Discord :</label>
+                    <input type="text" id="discordName" placeholder="VotreNom#1234" required>
+                </div>
+                <div class="form-group">
+                    <label for="dinoName">🦖 Dinosaure sélectionné :</label>
+                    <input type="text" id="dinoName" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="dinoPrice">💰 Prix :</label>
+                    <input type="text" id="dinoPrice" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="additionalInfo">📝 Informations supplémentaires :</label>
+                    <textarea id="additionalInfo" placeholder="Couleurs préférées, niveau spécifique, etc..."></textarea>
+                </div>
+                <button type="submit" class="submit-btn">
+                    <span class="btn-text">Envoyer le Ticket</span>
+                    <div class="btn-loading" style="display: none;">
+                        <div class="spinner"></div>
+                        Envoi en cours...
+                    </div>
+                </button>
+            </form>
+        </div>
+    </div>
+    
     <script>
-        // Animation au clic sur les éléments
+        // Variables pour le modal
+        const modal = document.getElementById('ticketModal');
+        const closeBtn = document.querySelector('.close');
+        const ticketForm = document.getElementById('ticketForm');
+        const webhookInput = document.getElementById('webhookUrl');
+        
+        // Sauvegarder l'URL webhook dans le localStorage
+        webhookInput.addEventListener('change', function() {
+            localStorage.setItem('discordWebhook', this.value);
+        });
+        
+        // Charger l'URL webhook sauvegardée
+        window.addEventListener('load', function() {
+            const savedWebhook = localStorage.getItem('discordWebhook');
+            if (savedWebhook) {
+                webhookInput.value = savedWebhook;
+            }
+        });
+        
+        // Animation au clic sur les éléments + ouverture modal
         document.querySelectorAll('.dino-item').forEach(item => {
             item.addEventListener('click', function() {
                 this.style.transform = 'scale(0.95) translateX(10px)';
@@ -438,74 +770,86 @@
                 setTimeout(() => {
                     snitch.style.animation = 'bounce 0.5s ease-out 3';
                 }, 10);
+                
+                // Ouvrir le modal de ticket
+                openTicketModal(this);
             });
         });
         
-        // Animation de survol améliorée
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) rotateX(5deg)';
-            });
+        // Fonction pour ouvrir le modal
+        function openTicketModal(dinoElement) {
+            const dinoName = dinoElement.querySelector('.dino-name').textContent;
+            const dinoPrice = dinoElement.querySelector('.dino-price span').textContent + ' Vifs d\'Or';
             
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) rotateX(0deg)';
-            });
-        });
-        
-        // Effet de particules au clic
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.width = '6px';
-            particle.style.height = '6px';
-            particle.style.backgroundColor = '#ffd700';
-            particle.style.borderRadius = '50%';
-            particle.style.pointerEvents = 'none';
-            particle.style.zIndex = '1000';
-            document.body.appendChild(particle);
+            document.getElementById('dinoName').value = dinoName;
+            document.getElementById('dinoPrice').value = dinoPrice;
             
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = 50 + Math.random() * 50;
-            const vx = Math.cos(angle) * velocity;
-            const vy = Math.sin(angle) * velocity;
-            
-            let posX = x;
-            let posY = y;
-            let opacity = 1;
-            
-            const animate = () => {
-                posX += vx * 0.02;
-                posY += vy * 0.02;
-                opacity -= 0.02;
-                
-                particle.style.left = posX + 'px';
-                particle.style.top = posY + 'px';
-                particle.style.opacity = opacity;
-                
-                if (opacity > 0) {
-                    requestAnimationFrame(animate);
-                } else {
-                    document.body.removeChild(particle);
-                }
-            };
-            
-            animate();
+            modal.style.display = 'block';
+            setTimeout(() => {
+                modal.classList.add('show');
+            }, 10);
         }
         
-        document.querySelectorAll('.dino-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                for (let i = 0; i < 8; i++) {
-                    setTimeout(() => {
-                        createParticle(
-                            e.clientX + (Math.random() - 0.5) * 40,
-                            e.clientY + (Math.random() - 0.5) * 40
-                        );
-                    }, i * 50);
-                }
-            });
+        // Fermer le modal
+        closeBtn.addEventListener('click', closeModal);
+        window.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeModal();
+            }
         });
-    </script>
-</body>
-</html>
+        
+        function closeModal() {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 300);
+        }
+        
+        // Gestion du formulaire
+        ticketForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Vérifier si le webhook est configuré
+            const webhookUrl = webhookInput.value.trim();
+            if (!webhookUrl) {
+                showNotification('⚠️ Veuillez configurer votre webhook Discord', 'error');
+                return;
+            }
+            
+            const submitBtn = document.querySelector('.submit-btn');
+            const btnText = document.querySelector('.btn-text');
+            const btnLoading = document.querySelector('.btn-loading');
+            
+            // Afficher le loading
+            btnText.style.display = 'none';
+            btnLoading.style.display = 'flex';
+            submitBtn.disabled = true;
+            
+            const formData = {
+                discordName: document.getElementById('discordName').value,
+                dinoName: document.getElementById('dinoName').value,
+                dinoPrice: document.getElementById('dinoPrice').value,
+                additionalInfo: document.getElementById('additionalInfo').value
+            };
+            
+            try {
+                await sendTicketToDiscord(formData, webhookUrl);
+                
+                // Succès
+                showNotification('✅ Ticket créé avec succès !', 'success');
+                closeModal();
+                ticketForm.reset();
+                
+            } catch (error) {
+                console.error('Erreur:', error);
+                showNotification('❌ Erreur lors de l\'envoi du ticket. Vérifiez votre webhook.', 'error');
+            } finally {
+                // Réinitialiser le bouton
+                btnText.style.display = 'block';
+                btnLoading.style.display = 'none';
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // Fonction pour envoyer le ticket à Discord
+        async function sendTicketTo
