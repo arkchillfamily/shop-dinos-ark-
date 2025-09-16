@@ -505,30 +505,19 @@
         .discord-config {
             margin-bottom: 2rem;
             padding: 1rem;
-            background: rgba(255, 215, 0, 0.1);
-            border: 2px solid #ffd700;
+            background: rgba(0, 255, 0, 0.1);
+            border: 2px solid #00ff00;
             border-radius: 15px;
             text-align: center;
         }
         
         .discord-config h4 {
-            color: #ffd700;
+            color: #00ff00;
             margin-bottom: 0.5rem;
         }
         
         .discord-config p {
             color: #a0a0ff;
-            font-size: 0.9rem;
-        }
-        
-        .webhook-input {
-            margin-top: 1rem;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            color: #fff;
-            width: 100%;
             font-size: 0.9rem;
         }
         
@@ -573,6 +562,12 @@
                 <div class="golden-snitch"></div>
                 <span>Prix en Vifs d'Or</span>
                 <div class="golden-snitch"></div>
+            </div>
+            
+            <!-- Status Bot connecté -->
+            <div class="discord-config">
+                <h4>🤖 Bot ARK Tickets - Connecté</h4>
+                <p>Les tickets sont créés automatiquement dans Discord ! Un salon privé sera généré à chaque commande.</p>
             </div>
         </div>
         
@@ -651,279 +646,3 @@
                     <div class="dino-item moyen">
                         <span class="dino-name">🦕✨ Moyen</span>
                         <div class="dino-price">
-                            <span>2 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item special">
-                        <span class="dino-name">🐉✨ Spécial</span>
-                        <div class="dino-price">
-                            <span>3 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moros">
-                        <span class="dino-name">💀✨ Moros</span>
-                        <div class="dino-price">
-                            <span>4 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="legend">
-            <h3>📋 Légende des Catégories</h3>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <div class="legend-color petit" style="background-color: #4ecdc4;"></div>
-                    <span>Petit / Épaule</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color moyen" style="background-color: #ffd700;"></div>
-                    <span>Moyen</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color special" style="background-color: #ff6b6b;"></div>
-                    <span>Spécial</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color moros" style="background-color: #9b59b6;"></div>
-                    <span>Moros</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <!-- Modal pour le ticket -->
-    <div id="ticketModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>🎫 Créer un Ticket</h2>
-            <form id="ticketForm">
-                <div class="form-group">
-                    <label for="discordName">🎮 Nom Discord :</label>
-                    <input type="text" id="discordName" placeholder="VotreNom#1234" required>
-                </div>
-                <div class="form-group">
-                    <label for="dinoName">🦖 Dinosaure sélectionné :</label>
-                    <input type="text" id="dinoName" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="dinoPrice">💰 Prix :</label>
-                    <input type="text" id="dinoPrice" readonly>
-                </div>
-                <div class="form-group">
-                    <label for="additionalInfo">📝 Informations supplémentaires :</label>
-                    <textarea id="additionalInfo" placeholder="Couleurs préférées, niveau spécifique, etc..."></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <span class="btn-text">Envoyer le Ticket</span>
-                    <div class="btn-loading" style="display: none;">
-                        <div class="spinner"></div>
-                        Envoi en cours...
-                    </div>
-                </button>
-            </form>
-        </div>
-    </div>
-    
-    <script>
-        // ⚠️ CONFIGURATION DISCORD WEBHOOK ⚠️
-        // Remplacez cette URL par votre webhook Discord
-        const DISCORD_WEBHOOK_URL = 'https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo';
-        
-        // Variables pour le modal
-        const modal = document.getElementById('ticketModal');
-        const closeBtn = document.querySelector('.close');
-        const ticketForm = document.getElementById('ticketForm');
-        
-        // Animation au clic sur les éléments + ouverture modal
-        document.querySelectorAll('.dino-item').forEach(item => {
-            item.addEventListener('click', function() {
-                this.style.transform = 'scale(0.95) translateX(10px)';
-                setTimeout(() => {
-                    this.style.transform = 'translateX(10px)';
-                }, 150);
-                
-                // Animation des vifs d'or
-                const snitch = this.querySelector('.price-snitch');
-                snitch.style.animation = 'none';
-                setTimeout(() => {
-                    snitch.style.animation = 'bounce 0.5s ease-out 3';
-                }, 10);
-                
-                // Ouvrir le modal de ticket
-                openTicketModal(this);
-            });
-        });
-        
-        // Fonction pour ouvrir le modal
-        function openTicketModal(dinoElement) {
-            const dinoName = dinoElement.querySelector('.dino-name').textContent;
-            const dinoPrice = dinoElement.querySelector('.dino-price span').textContent + ' Vifs d\'Or';
-            
-            document.getElementById('dinoName').value = dinoName;
-            document.getElementById('dinoPrice').value = dinoPrice;
-            
-            modal.style.display = 'block';
-            setTimeout(() => {
-                modal.classList.add('show');
-            }, 10);
-        }
-        
-        // Fermer le modal
-        closeBtn.addEventListener('click', closeModal);
-        window.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-        
-        function closeModal() {
-            modal.classList.remove('show');
-            setTimeout(() => {
-                modal.style.display = 'none';
-            }, 300);
-        }
-        
-        // Fonction pour afficher les notifications
-        function showNotification(message, type) {
-            // Créer l'élément notification
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            const content = document.createElement('div');
-            content.className = 'notification-content';
-            content.innerHTML = `
-                <span>${message}</span>
-                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
-            `;
-            
-            notification.appendChild(content);
-            document.body.appendChild(notification);
-            
-            // Afficher la notification
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 10);
-            
-            // Auto-suppression après 5 secondes
-            setTimeout(() => {
-                if (notification.parentElement) {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        if (notification.parentElement) {
-                            notification.remove();
-                        }
-                    }, 300);
-                }
-            }, 5000);
-        }
-        
-        // Gestion du formulaire
-        ticketForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            // Vérifier si le webhook est configuré
-            if (!DISCORD_WEBHOOK_URL || DISCORD_WEBHOOK_URL.includes('VOTRE_WEBHOOK')) {
-                showNotification('⚠️ Webhook Discord non configuré dans le code', 'error');
-                return;
-            }
-            
-            const submitBtn = document.querySelector('.submit-btn');
-            const btnText = document.querySelector('.btn-text');
-            const btnLoading = document.querySelector('.btn-loading');
-            
-            // Afficher le loading
-            btnText.style.display = 'none';
-            btnLoading.style.display = 'flex';
-            submitBtn.disabled = true;
-            
-            const formData = {
-                discordName: document.getElementById('discordName').value,
-                dinoName: document.getElementById('dinoName').value,
-                dinoPrice: document.getElementById('dinoPrice').value,
-                additionalInfo: document.getElementById('additionalInfo').value
-            };
-            
-            try {
-                await sendTicketToDiscord(formData);
-                
-                // Succès
-                showNotification('✅ Ticket créé avec succès !', 'success');
-                closeModal();
-                ticketForm.reset();
-                
-            } catch (error) {
-                console.error('Erreur:', error);
-                showNotification('❌ Erreur lors de l\'envoi du ticket. Vérifiez votre webhook.', 'error');
-            } finally {
-                // Réinitialiser le bouton
-                btnText.style.display = 'block';
-                btnLoading.style.display = 'none';
-                submitBtn.disabled = false;
-            }
-        });
-        
-        // Fonction pour envoyer le ticket à Discord
-        async function sendTicketToDiscord(data) {
-            const embed = {
-                title: "🎫 Nouveau Ticket - Shop Dinos ARK",
-                color: 0xFFD700,
-                fields: [
-                    {
-                        name: "🎮 Joueur",
-                        value: data.discordName,
-                        inline: true
-                    },
-                    {
-                        name: "🦖 Dinosaure",
-                        value: data.dinoName,
-                        inline: true
-                    },
-                    {
-                        name: "💰 Prix",
-                        value: data.dinoPrice,
-                        inline: true
-                    }
-                ],
-                thumbnail: {
-                    url: "https://i.imgur.com/dino-icon.png"
-                },
-                timestamp: new Date().toISOString(),
-                footer: {
-                    text: "Shop Dinos ARK • Ticket automatique"
-                }
-            };
-            
-            if (data.additionalInfo) {
-                embed.fields.push({
-                    name: "📝 Informations supplémentaires",
-                    value: data.additionalInfo,
-                    inline: false
-                });
-            }
-            
-            const payload = {
-                username: "🦖 Shop Dinos ARK",
-                avatar_url: "https://i.imgur.com/ark-logo.png",
-                embeds: [embed]
-            };
-            
-            const response = await fetch(DISCORD_WEBHOOK_URL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(payload)
-            });
-            
-            if (!response.ok) {
-                throw new Error('Erreur webhook Discord');
-            }
-        }
-    </script>
-</body>
-</html>
