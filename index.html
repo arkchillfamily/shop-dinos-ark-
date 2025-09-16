@@ -1,1045 +1,278 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop Dinos ARK</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
-            font-family: 'Orbitron', monospace;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-        
-        .background-pattern {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.1;
-            background-image: 
-                radial-gradient(circle at 20% 50%, #ffd700 2px, transparent 2px),
-                radial-gradient(circle at 80% 20%, #ff6b6b 1px, transparent 1px),
-                radial-gradient(circle at 40% 80%, #4ecdc4 1px, transparent 1px);
-            background-size: 100px 100px, 150px 150px, 200px 200px;
-            animation: float 20s infinite linear;
-            z-index: -1;
-        }
-        
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            position: relative;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-        
-        .title {
-            font-size: 3.5rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-            margin-bottom: 1rem;
-            animation: glow 2s ease-in-out infinite alternate;
-        }
-        
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-            to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            color: #a0a0ff;
-            margin-bottom: 2rem;
-        }
-        
-        .currency-display {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.1));
-            padding: 0.8rem 1.5rem;
-            border-radius: 25px;
-            border: 2px solid #ffd700;
-            margin-bottom: 2rem;
-            animation: pulse 2s infinite;
-        }
-        
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
-        }
-        
-        .golden-snitch {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #ffd700, #ffed4e);
-            border-radius: 50%;
-            position: relative;
-            animation: rotate 3s linear infinite;
-        }
-        
-        .golden-snitch::before,
-        .golden-snitch::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 8px;
-            height: 3px;
-            background: #fff;
-            transform: translateY(-50%);
-            border-radius: 2px;
-        }
-        
-        .golden-snitch::before {
-            left: -6px;
-            transform: translateY(-50%) rotate(20deg);
-        }
-        
-        .golden-snitch::after {
-            right: -6px;
-            transform: translateY(-50%) rotate(-20deg);
-        }
-        
-        @keyframes rotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        /* Configuration Discord */
-        .discord-config {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 200, 0, 0.05));
-            border: 2px solid #00ff00;
-            border-radius: 15px;
-            text-align: center;
-        }
-        
-        .discord-config h4 {
-            color: #00ff00;
-            margin-bottom: 0.5rem;
-        }
-        
-        .discord-config p {
-            color: #a0a0ff;
-            font-size: 0.9rem;
-        }
-        
-        .bot-status {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(0, 255, 0, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            margin-top: 0.5rem;
-        }
-        
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            background: #00ff00;
-            border-radius: 50%;
-            animation: blink 2s infinite;
-        }
-        
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
-        }
-        
-        .categories {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .category-card {
-            background: linear-gradient(135deg, rgba(26, 26, 62, 0.8), rgba(45, 27, 78, 0.6));
-            border-radius: 20px;
-            padding: 2rem;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .category-card::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #ffd700, #ff6b6b, #4ecdc4, #ffd700);
-            border-radius: 22px;
-            z-index: -1;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-        
-        .category-card:hover::before {
-            opacity: 0.5;
-        }
-        
-        .category-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-        
-        .category-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            text-align: center;
-            position: relative;
-        }
-        
-        .level-225 { color: #4ecdc4; }
-        .level-450 { color: #ff6b6b; }
-        .shiny { 
-            background: linear-gradient(45deg, #ffd700, #ff69b4, #00ff00, #ffd700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: rainbow 3s linear infinite;
-        }
-        
-        @keyframes rainbow {
-            0% { filter: hue-rotate(0deg); }
-            100% { filter: hue-rotate(360deg); }
-        }
-        
-        .dino-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-        
-        .dino-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.5rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 15px;
-            border-left: 4px solid;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-        }
-        
-        .dino-item::after {
-            content: '🎫 Cliquez pour commander via Discord';
-            position: absolute;
-            right: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-        
-        .dino-item:hover::after {
-            opacity: 1;
-        }
-        
-        .dino-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(10px);
-        }
-        
-        .petit { border-left-color: #4ecdc4; }
-        .moyen { border-left-color: #ffd700; }
-        .special { border-left-color: #ff6b6b; }
-        .moros { border-left-color: #9b59b6; }
-        
-        .dino-name {
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-        
-        .dino-price {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-weight: 700;
-            font-size: 1.2rem;
-            color: #ffd700;
-        }
-        
-        .price-snitch {
-            width: 16px;
-            height: 16px;
-            background: radial-gradient(circle, #ffd700, #ffed4e);
-            border-radius: 50%;
-            animation: bounce 1s infinite;
-        }
-        
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-3px); }
-        }
-        
-        .discord-info {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(88, 101, 242, 0.1);
-            border: 2px solid #5865f2;
-            border-radius: 15px;
-            text-align: center;
-        }
-        
-        .discord-info h3 {
-            color: #5865f2;
-            margin-bottom: 1rem;
-        }
-        
-        .discord-link {
-            display: inline-block;
-            background: linear-gradient(45deg, #5865f2, #7289da);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: all 0.3s ease;
-            margin: 0.5rem;
-        }
-        
-        .discord-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(88, 101, 242, 0.4);
-        }
-        
-        .legend {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .legend h3 {
-            color: #ffd700;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        
-        .legend-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-        
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        
-        .legend-color {
-            width: 20px;
-            height: 4px;
-            border-radius: 2px;
-        }
-        
-        /* Styles pour les notifications */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 2000;
-            padding: 1rem 1.5rem;
-            border-radius: 10px;
-            color: white;
-            font-weight: 600;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-            max-width: 350px;
-        }
-        
-        .notification.show {
-            transform: translateX(0);
-        }
-        
-        .notification.success {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            border-left: 4px solid #2e7d32;
-        }
-        
-        .notification.info {
-            background: linear-gradient(45deg, #5865f2, #7289da);
-            border-left: 4px solid #4752c4;
-        }
-        
-        .notification-content {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-        
-        .notification-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            opacity: 0.7;
-            transition: opacity 0.3s;
-        }
-        
-        .notification-close:hover {
-            opacity: 1;
-        }
-        
-        /* Styles pour le modal de commande */
-        .order-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 3000;
-            opacity: 1;
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal-overlay {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(5px);
-        }
-        
-        .modal-content {
-            background: linear-gradient(135deg, rgba(26, 26, 62, 0.95), rgba(45, 27, 78, 0.95));
-            border: 2px solid #ffd700;
-            border-radius: 20px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            position: relative;
-            animation: modalSlideIn 0.3s ease;
-        }
-        
-        @keyframes modalSlideIn {
-            from {
-                transform: translateY(-50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-        
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1.5rem;
-            color: #aaa;
-            font-size: 2rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        
-        .modal-close:hover {
-            color: #ffd700;
-        }
-        
-        .modal-content h2 {
-            color: #ffd700;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-        }
-        
-        .modal-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 1rem;
-            border-radius: 15px;
-            margin-bottom: 1.5rem;
-            border-left: 4px solid #ffd700;
-        }
-        
-        .modal-info p {
-            margin: 0.5rem 0;
-            color: #a0a0ff;
-        }
-        
-        .modal-instructions {
-            margin-bottom: 2rem;
-        }
-        
-        .modal-instructions h3 {
-            color: #4ecdc4;
-            margin-bottom: 1rem;
-        }
-        
-        .modal-instructions ol {
-            color: #fff;
-            padding-left: 1.5rem;
-        }
-        
-        .modal-instructions li {
-            margin: 0.8rem 0;
-            line-height: 1.5;
-        }
-        
-        .modal-instructions code {
-            background: rgba(255, 215, 0, 0.2);
-            color: #ffd700;
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
-            font-family: monospace;
-        }
-        
-        .modal-buttons {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-        
-        .discord-btn, .copy-command-btn {
-            flex: 1;
-            min-width: 200px;
-            padding: 1rem;
-            border: none;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .discord-btn {
-            background: linear-gradient(45deg, #5865f2, #7289da);
-            color: white;
-        }
-        
-        .copy-command-btn {
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            color: #000;
-        }
-        
-        .discord-btn:hover, .copy-command-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        }
-        
-        /* Styles pour le formulaire de commande */
-        .order-form {
-            margin-top: 1.5rem;
-        }
-        
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-        
-        .form-group label {
-            display: block;
-            color: #a0a0ff;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-        
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 1rem;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            font-family: inherit;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-        
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #ffd700;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-        }
-        
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-        
-        .submit-order-btn {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(45deg, #ffd700, #ffed4e);
-            border: none;
-            border-radius: 15px;
-            color: #000;
-            font-weight: 700;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .submit-order-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 215, 0, 0.4);
-        }
-        
-        .submit-order-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
-        @media (max-width: 768px) {
-            .title { font-size: 2.5rem; }
-            .categories { grid-template-columns: 1fr; }
-            .container { padding: 1rem; }
-            
-            .notification {
-                top: 10px;
-                right: 10px;
-                left: 10px;
-                max-width: none;
-                transform: translateY(-100px);
-            }
-            
-            .notification.show {
-                transform: translateY(0);
-            }
-            
-            .dino-item::after {
-                content: '🎫 Touchez pour commander';
-            }
-            
-            .modal-content {
-                width: 95%;
-                padding: 1.5rem;
-                margin: 1rem;
-            }
-            
-            .modal-buttons {
-                flex-direction: column;
-            }
-            
-            .discord-btn, .copy-command-btn {
-                min-width: auto;
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop Dinos ARK</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
+      font-family: 'Orbitron', monospace;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* --- NAVBAR --- */
+    nav {
+      background: rgba(0,0,0,0.6);
+      padding: 1rem;
+      border-bottom: 2px solid #ffd700;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a {
+      color: #ffd700;
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+    }
+    nav a:hover { color: #fff; }
+
+    .background-pattern {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0.1;
+      background-image: radial-gradient(circle at 20% 50%, #ffd700 2px, transparent 2px),
+                        radial-gradient(circle at 80% 20%, #ff6b6b 1px, transparent 1px),
+                        radial-gradient(circle at 40% 80%, #4ecdc4 1px, transparent 1px);
+      background-size: 100px 100px, 150px 150px, 200px 200px;
+      animation: float 20s infinite linear;
+      z-index: -1;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; position: relative; }
+    .header { text-align: center; margin-bottom: 3rem; }
+    .title {
+      font-size: 3.5rem; font-weight: 900;
+      background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+      margin-bottom: 1rem;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+      to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
+    }
+    .subtitle { font-size: 1.2rem; color: #a0a0ff; margin-bottom: 2rem; }
+
+    /* --- CARTES DINOS --- */
+    .categories {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem; margin-bottom: 2rem;
+    }
+    .category-card {
+      background: linear-gradient(135deg, rgba(26, 26, 62, 0.8), rgba(45, 27, 78, 0.6));
+      border-radius: 20px; padding: 2rem;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative; overflow: hidden;
+    }
+    .category-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+    .category-title { font-size: 1.8rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center; }
+
+    .dino-list { display: flex; flex-direction: column; gap: 1rem; }
+    .dino-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .dino-item:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
+
+    .dino-name { font-weight: 600; font-size: 1.1rem; }
+    .dino-price { font-weight: 700; font-size: 1.2rem; color: #ffd700; }
+
+    /* --- MODAL --- */
+    .modal {
+      display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .modal.show { opacity: 1; }
+    .modal-content {
+      background: linear-gradient(135deg, rgba(26,26,62,0.95), rgba(45,27,78,0.95));
+      margin: 5% auto; padding: 2rem; border-radius: 20px;
+      max-width: 500px;
+      border: 2px solid #ffd700;
+      box-shadow: 0 0 50px rgba(255,215,0,0.3);
+      transform: translateY(-50px);
+      transition: transform 0.3s;
+      position: relative;
+    }
+    .modal.show .modal-content { transform: translateY(0); }
+    .close { position: absolute; top: 1rem; right: 1rem; font-size: 2rem; cursor: pointer; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.3rem; color: #ffd700; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 0.8rem;
+      border: 1px solid #ffd700; border-radius: 10px;
+      background: rgba(255,255,255,0.1); color: #fff;
+    }
+
+    .submit-btn {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(45deg,#ffd700,#ffed4e);
+      border: none; border-radius: 15px;
+      font-weight: 700; cursor: pointer;
+    }
+    .submit-btn:hover { box-shadow: 0 10px 25px rgba(255,215,0,0.4); }
+
+  </style>
 </head>
 <body>
-    <div class="background-pattern"></div>
-    
-    <div class="container">
-        <div class="header">
-            <h1 class="title">SHOP DINOS ARK</h1>
-            <p class="subtitle">Découvrez notre collection exclusive de dinosaures</p>
-            <div class="currency-display">
-                <div class="golden-snitch"></div>
-                <span>Prix en Vifs d'Or</span>
-                <div class="golden-snitch"></div>
-            </div>
-            
-            <!-- Status Bot Discord -->
-            <div class="discord-config">
-                <h4>🤖 Bot ARK Shop - En ligne</h4>
-                <div class="bot-status">
-                    <div class="status-dot"></div>
-                    <span>Système de tickets automatique activé</span>
-                </div>
-                <p>Commandes automatiquement créées dans Discord avec tickets privés !</p>
-            </div>
-        </div>
-        
-        <div class="categories">
-            <div class="category-card">
-                <h2 class="category-title level-225">Dinos Level 225</h2>
-                <div class="dino-list">
-                    <div class="dino-item petit" data-dino="petit_225">
-                        <span class="dino-name">🦖 Petit / Épaule</span>
-                        <div class="dino-price">
-                            <span>500</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moyen" data-dino="moyen_225">
-                        <span class="dino-name">🦕 Moyen</span>
-                        <div class="dino-price">
-                            <span>750</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item special" data-dino="special_225">
-                        <span class="dino-name">🐉 Spécial</span>
-                        <div class="dino-price">
-                            <span>1 500</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="category-card">
-                <h2 class="category-title level-450">Dinos Level 450</h2>
-                <div class="dino-list">
-                    <div class="dino-item petit" data-dino="petit_450">
-                        <span class="dino-name">🦖 Petit / Épaule</span>
-                        <div class="dino-price">
-                            <span>750</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moyen" data-dino="moyen_450">
-                        <span class="dino-name">🦕 Moyen</span>
-                        <div class="dino-price">
-                            <span>1 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item special" data-dino="special_450">
-                        <span class="dino-name">🐉 Spécial</span>
-                        <div class="dino-price">
-                            <span>2 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moros" data-dino="moros_450">
-                        <span class="dino-name">💀 Moros</span>
-                        <div class="dino-price">
-                            <span>3 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="category-card">
-                <h2 class="category-title shiny">Dinos Shiny ✨</h2>
-                <div class="dino-list">
-                    <div class="dino-item petit" data-dino="petit_shiny">
-                        <span class="dino-name">🦖✨ Petit / Épaule</span>
-                        <div class="dino-price">
-                            <span>1 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moyen" data-dino="moyen_shiny">
-                        <span class="dino-name">🦕✨ Moyen</span>
-                        <div class="dino-price">
-                            <span>2 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item special" data-dino="special_shiny">
-                        <span class="dino-name">🐉✨ Spécial</span>
-                        <div class="dino-price">
-                            <span>3 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                    <div class="dino-item moros" data-dino="moros_shiny">
-                        <span class="dino-name">💀✨ Moros</span>
-                        <div class="dino-price">
-                            <span>4 000</span>
-                            <div class="price-snitch"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Informations Discord -->
-        <div class="discord-info">
-            <h3>🎮 Comment Commander ?</h3>
-            <p>Rejoignez notre serveur Discord et utilisez la commande <strong>!shop</strong></p>
-            <p>Le bot créera automatiquement un ticket privé pour votre commande !</p>
-            <a href="https://discord.gg/VOTRE_INVITE" class="discord-link" target="_blank">
-                Rejoindre Discord
-            </a>
-            <a href="https://discord.com/oauth2/authorize?client_id=1417583510557954150&permissions=268782608&integration_type=0&scope=bot" class="discord-link" target="_blank">
-                Ajouter le Bot
-            </a>
-        </div>
-        
-        <div class="legend">
-            <h3>📋 Légende des Catégories</h3>
-            <div class="legend-grid">
-                <div class="legend-item">
-                    <div class="legend-color petit" style="background-color: #4ecdc4;"></div>
-                    <span>Petit / Épaule</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color moyen" style="background-color: #ffd700;"></div>
-                    <span>Moyen</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color special" style="background-color: #ff6b6b;"></div>
-                    <span>Spécial</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color moros" style="background-color: #9b59b6;"></div>
-                    <span>Moros</span>
-                </div>
-            </div>
-        </div>
+  <div class="background-pattern"></div>
+
+  <!-- NAVIGATION -->
+  <nav>
+    <a href="#home">Accueil</a>
+    <a href="#shop">Shop</a>
+    <a href="#tickets">Tickets</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <div class="container" id="home">
+    <div class="header">
+      <h1 class="title">SHOP DINOS ARK</h1>
+      <p class="subtitle">Découvrez notre collection exclusive de dinosaures</p>
     </div>
-    
-    <script>
-        // Rendre les onglets cliquables avec actions
-        document.querySelectorAll('.dino-item').forEach(item => {
-            item.addEventListener('click', function() {
-                // Animation visuelle
-                this.style.transform = 'scale(0.95) translateX(10px)';
-                setTimeout(() => {
-                    this.style.transform = 'translateX(10px)';
-                }, 150);
-                
-                // Animation des vifs d'or
-                const snitch = this.querySelector('.price-snitch');
-                snitch.style.animation = 'none';
-                setTimeout(() => {
-                    snitch.style.animation = 'bounce 0.5s ease-out 3';
-                }, 10);
-                
-                // Récupérer les infos du dino
-                const dinoName = this.querySelector('.dino-name').textContent;
-                const dinoPrice = this.querySelector('.dino-price span').textContent;
-                const dinoType = this.dataset.dino;
-                
-                // Ouvrir le modal de commande
-                openOrderModal(dinoName, dinoPrice, dinoType);
-            });
+
+    <div class="categories" id="shop">
+      <!-- Dinos 225 -->
+      <div class="category-card">
+        <h2 class="category-title">Dinos Level 225</h2>
+        <div class="dino-list">
+          <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="500 Vifs d'Or"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">500</span></div>
+          <div class="dino-item" data-name="🦕 Moyen" data-price="750 Vifs d'Or"><span class="dino-name">🦕 Moyen</span><span class="dino-price">750</span></div>
+          <div class="dino-item" data-name="🐉 Spécial" data-price="1500 Vifs d'Or"><span class="dino-name">🐉 Spécial</span><span class="dino-price">1500</span></div>
+        </div>
+      </div>
+      <!-- Dinos 450 -->
+      <div class="category-card">
+        <h2 class="category-title">Dinos Level 450</h2>
+        <div class="dino-list">
+          <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="750 Vifs d'Or"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">750</span></div>
+          <div class="dino-item" data-name="🦕 Moyen" data-price="1000 Vifs d'Or"><span class="dino-name">🦕 Moyen</span><span class="dino-price">1000</span></div>
+          <div class="dino-item" data-name="🐉 Spécial" data-price="2000 Vifs d'Or"><span class="dino-name">🐉 Spécial</span><span class="dino-price">2000</span></div>
+          <div class="dino-item" data-name="💀 Moros" data-price="3000 Vifs d'Or"><span class="dino-name">💀 Moros</span><span class="dino-price">3000</span></div>
+        </div>
+      </div>
+      <!-- Dinos Shiny -->
+      <div class="category-card">
+        <h2 class="category-title">Dinos Shiny ✨</h2>
+        <div class="dino-list">
+          <div class="dino-item" data-name="🦖✨ Petit / Épaule" data-price="1000 Vifs d'Or"><span class="dino-name">🦖✨ Petit / Épaule</span><span class="dino-price">1000</span></div>
+          <div class="dino-item" data-name="🦕✨ Moyen" data-price="2000 Vifs d'Or"><span class="dino-name">🦕✨ Moyen</span><span class="dino-price">2000</span></div>
+          <div class="dino-item" data-name="🐉✨ Spécial" data-price="3000 Vifs d'Or"><span class="dino-name">🐉✨ Spécial</span><span class="dino-price">3000</span></div>
+          <div class="dino-item" data-name="💀✨ Moros" data-price="4000 Vifs d'Or"><span class="dino-name">💀✨ Moros</span><span class="dino-price">4000</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL TICKET -->
+  <div id="ticketModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>🎫 Créer un Ticket</h2>
+      <form id="ticketForm">
+        <div class="form-group">
+          <label for="discordName">Nom Discord</label>
+          <input type="text" id="discordName" required placeholder="Pseudo#1234">
+        </div>
+        <div class="form-group">
+          <label for="dinoName">Dinosaure choisi</label>
+          <input type="text" id="dinoName" readonly>
+        </div>
+        <div class="form-group">
+          <label for="dinoPrice">Prix</label>
+          <input type="text" id="dinoPrice" readonly>
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">Informations supplémentaires</label>
+          <textarea id="additionalInfo" placeholder="Couleurs, niveau, etc."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Envoyer le Ticket</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // ⚠️ Mets ici ton webhook spécial tickets ⚠️
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1417598554595262475/iShmG7XTi_Fcyf2LnzphS38blc5BDQzaHxU6neJtGZ10i2D_XBjh78E0eWsmALcFCJq2";
+
+    const modal = document.getElementById('ticketModal');
+    const closeBtn = document.querySelector('.close');
+    const ticketForm = document.getElementById('ticketForm');
+
+    // Ouvrir modal au clic sur un dino
+    document.querySelectorAll('.dino-item').forEach(item => {
+      item.addEventListener('click', () => {
+        document.getElementById('dinoName').value = item.dataset.name;
+        document.getElementById('dinoPrice').value = item.dataset.price;
+        modal.style.display = 'block';
+        setTimeout(()=> modal.classList.add('show'), 10);
+      });
+    });
+
+    closeBtn.onclick = () => { modal.classList.remove('show'); setTimeout(()=> modal.style.display='none',300); };
+    window.onclick = e => { if (e.target === modal) closeBtn.onclick(); };
+
+    // Envoi vers Discord
+    ticketForm.addEventListener('submit', async e => {
+      e.preventDefault();
+      const data = {
+        discordName: document.getElementById('discordName').value,
+        dinoName: document.getElementById('dinoName').value,
+        dinoPrice: document.getElementById('dinoPrice').value,
+        additionalInfo: document.getElementById('additionalInfo').value
+      };
+      const embed = {
+        title: "🎫 Nouveau Ticket - Shop Dinos ARK",
+        color: 0xFFD700,
+        fields: [
+          { name: "🎮 Joueur", value: data.discordName, inline: true },
+          { name: "🦖 Dinosaure", value: data.dinoName, inline: true },
+          { name: "💰 Prix", value: data.dinoPrice, inline: true }
+        ],
+        footer: { text: "Shop Dinos ARK • Ticket automatique" },
+        timestamp: new Date().toISOString()
+      };
+      if (data.additionalInfo) {
+        embed.fields.push({ name: "📝 Infos Supplémentaires", value: data.additionalInfo });
+      }
+      try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: "🦖 Shop Dinos ARK", embeds: [embed] })
         });
-        
-        // Fonction pour ouvrir le modal de commande
-        function openOrderModal(name, price, type) {
-            // Créer le modal dynamiquement
-            const modal = document.createElement('div');
-            modal.className = 'order-modal';
-            modal.innerHTML = `
-                <div class="modal-overlay">
-                    <div class="modal-content">
-                        <span class="modal-close">&times;</span>
-                        <h2>🎫 Commander ${name}</h2>
-                        <div class="modal-info">
-                            <p><strong>Prix:</strong> ${price} 🏅</p>
-                            <p><strong>Type:</strong> ${type}</p>
-                        </div>
-                        <form class="order-form" onsubmit="submitOrder(event, '${name}', '${price}', '${type}')">
-                            <div class="form-group">
-                                <label for="discordName">Nom Discord *</label>
-                                <input type="text" id="discordName" name="discordName" placeholder="VotreNom#1234" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="additionalInfo">Informations supplémentaires</label>
-                                <textarea id="additionalInfo" name="additionalInfo" rows="4" placeholder="Couleurs préférées, stats spéciales, nom du dino, votre Steam ID si nécessaire..."></textarea>
-                            </div>
-                            <button type="submit" class="submit-order-btn">
-                                Envoyer la commande
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            modal.style.display = 'flex';
-            
-            // Fermeture du modal
-            modal.querySelector('.modal-close').onclick = () => closeModal(modal);
-            modal.querySelector('.modal-overlay').onclick = (e) => {
-                if (e.target === e.currentTarget) closeModal(modal);
-            };
-        }
-        
-        // Fonction pour fermer le modal
-        function closeModal(modal) {
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(modal);
-            }, 300);
-        }
-        
-        // Fonction pour soumettre la commande
-        function submitOrder(event, dinoName, dinoPrice, dinoType) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const orderData = {
-                discordName: formData.get('discordName'),
-                additionalInfo: formData.get('additionalInfo'),
-                dinoName: dinoName,
-                dinoPrice: dinoPrice,
-                dinoType: dinoType,
-                timestamp: new Date().toISOString()
-            };
-            
-            // Validation du nom Discord
-            if (!orderData.discordName.trim()) {
-                showNotification('Veuillez saisir votre nom Discord', 'error');
-                return;
-            }
-            
-            // Envoyer au webhook Discord
-            sendOrderToDiscord(orderData);
-        }
-        
-        // Fonction pour envoyer au webhook Discord
-        async function sendOrderToDiscord(orderData) {
-            const WEBHOOK_URL = 'https://discord.com/api/webhooks/1417598554595262475/iShmG7XTi_Fcyf2LnzphS38blc5BDQzaHxU6neJtGZ10i2D_XBjh78E0eWsmALcFCJq2';
-            
-            const embed = {
-                title: "🎫 Nouvelle Commande - Site Web",
-                color: 0xFFD700,
-                fields: [
-                    {
-                        name: "Nom Discord",
-                        value: orderData.discordName,
-                        inline: true
-                    },
-                    {
-                        name: "Dinosaure",
-                        value: orderData.dinoName,
-                        inline: true
-                    },
-                    {
-                        name: "Prix",
-                        value: orderData.dinoPrice + " Vifs d'Or",
-                        inline: true
-                    }
-                ],
-                timestamp: orderData.timestamp,
-                footer: {
-                    text: "Commande depuis le site web"
-                }
-            };
-            
-            if (orderData.additionalInfo) {
-                embed.fields.push({
-                    name: "Informations supplémentaires",
-                    value: orderData.additionalInfo,
-                    inline: false
-                });
-            }
-            
-            const payload = {
-                username: "🦖 Shop Dinos ARK - Site Web",
-                avatar_url: "https://i.imgur.com/ark-logo.png",
-                embeds: [embed]
-            };
-            
-            try {
-                const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                if (response.ok) {
-                    showNotification('Commande envoyée avec succès !', 'success');
-                    // Fermer le modal
-                    const modal = document.querySelector('.order-modal');
-                    if (modal) {
-                        closeModal(modal);
-                    }
-                } else {
-                    throw new Error('Erreur webhook');
-                }
-            } catch (error) {
-                console.error('Erreur:', error);
-                showNotification('Erreur lors de l\'envoi. Veuillez réessayer.', 'error');
-            }
-        }
-        
-        // Fonction pour afficher les notifications
-        function showNotification(message, type = 'info') {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span>${message}</span>
-                    <button class="notification-close">&times;</button>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-            
-            // Fermeture auto après 5 secondes
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            }, 5000);
-            
-            // Fermeture manuelle
-            notification.querySelector('.notification-close').addEventListener('click', () => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    document.body.removeChild(notification);
-                }, 300);
-            });
-        }
-        
-        // Message de bienvenue
-        setTimeout(() => {
-            showNotification('✨ Bienvenue ! Cliquez sur un dino pour plus d\'infos !', 'success');
-        }, 2000);
-    </script>
+        alert("✅ Ticket envoyé avec succès !");
+        ticketForm.reset();
+        closeBtn.onclick();
+      } catch (err) {
+        alert("❌ Erreur d'envoi, vérifie ton webhook.");
+      }
+    });
+  </script>
 </body>
 </html>
