@@ -16,20 +16,6 @@
       overflow-x: hidden;
     }
 
-    nav {
-      background: rgba(0,0,0,0.6);
-      padding: 1rem;
-      border-bottom: 2px solid #ffd700;
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    nav a { color: #ffd700; text-decoration: none; font-weight: 700; }
-    nav a:hover { color: #fff; }
-
     .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
     .header { text-align: center; margin-bottom: 3rem; }
     .title {
@@ -73,14 +59,50 @@
     .dino-item:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
     .dino-name { font-weight: 600; }
     .dino-price { font-weight: 700; color: #ffd700; }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 200;
+    }
+    .modal-content {
+      background: #1a1a3e;
+      padding: 2rem;
+      border-radius: 15px;
+      width: 400px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    }
+    .modal h2 { margin-bottom: 1rem; }
+    .modal input, .modal textarea {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border: none;
+      border-radius: 10px;
+      font-family: 'Orbitron', monospace;
+    }
+    .modal button {
+      background: #ffd700;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .modal button:hover {
+      background: #e6c200;
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="#home">Accueil</a>
-    <a href="#shop">Shop</a>
-  </nav>
-
   <div class="container" id="home">
     <div class="header">
       <h1 class="title">SHOP DINOS ARK</h1>
@@ -120,47 +142,86 @@
     </div>
   </div>
 
+  <!-- Modal pour pseudo et info -->
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h2>Finaliser votre commande</h2>
+      <input type="text" id="discordName" placeholder="Votre pseudo Discord (ex: Joueur#1234)" required>
+      <textarea id="extraInfo" placeholder="Infos complémentaires (facultatif)"></textarea>
+      <button id="submitOrder">Envoyer la commande</button>
+    </div>
+  </div>
+
   <script>
     // Ton webhook Discord (remplace par le tien)
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1417598554595262475/iShmG7XTi_Fcyf2LnzphS38blc5BDQzaHxU6neJtGZ10i2D_XBjh78E0eWsmALcFCJq2";
+    const orderModal = document.getElementById("orderModal");
+    const submitOrderBtn = document.getElementById("submitOrder");
+
+    let selectedDino = null;
 
     document.querySelectorAll('.dino-item').forEach(item => {
-      item.addEventListener('click', async () => {
-        const dinoName = item.dataset.name;
-        const dinoPrice = item.dataset.price;
-
-        const embed = {
-          title: "🦖 Nouvelle commande - Shop Dinos ARK",
-          color: 0xFFD700,
-          fields: [
-            { name: "🦖 Dinosaure", value: dinoName, inline: true },
-            { name: "💰 Prix", value: dinoPrice, inline: true },
-            {
-              name: "📩 Ouvrir un ticket",
-              value: "[Cliquez ici pour ouvrir un ticket privé](https://discord.com/channels/1202723157845348403/1417623179588800585)",
-              inline: false
-            }
-          ],
-          footer: { text: "Shop Dinos ARK • Commande automatique" },
-          timestamp: new Date().toISOString()
+      item.addEventListener('click', () => {
+        selectedDino = {
+          name: item.dataset.name,
+          price: item.dataset.price
         };
-
-        const payload = {
-          username: "🦖 Shop Dinos ARK",
-          embeds: [embed]
-        };
-
-        try {
-          await fetch(DISCORD_WEBHOOK_URL, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-          });
-          alert("✅ Commande envoyée !");
-        } catch (err) {
-          alert("❌ Erreur lors de l'envoi, vérifie ton webhook.");
-        }
+        orderModal.style.display = "flex";
       });
+    });
+
+    submitOrderBtn.addEventListener("click", async () => {
+      const discordName = document.getElementById("discordName").value.trim();
+      const extraInfo = document.getElementById("extraInfo").value.trim();
+
+      if (!discordName) {
+        alert("Merci d'entrer votre pseudo Discord.");
+        return;
+      }
+
+      const embed = {
+        title: "🦖 Nouvelle commande - Shop Dinos ARK",
+        color: 0xFFD700,
+        fields: [
+          { name: "🎮 Joueur", value: discordName, inline: false },
+          { name: "🦖 Dinosaure", value: selectedDino.name, inline: true },
+          { name: "💰 Prix", value: selectedDino.price, inline: true },
+          { name: "📝 Infos complémentaires", value: extraInfo || "Aucune", inline: false },
+          {
+            name: "📩 Ouvrir un ticket",
+            value: "[Cliquez ici pour ouvrir un ticket privé](https://discord.com/channels/1202723157845348403/1417623179588800585)",
+            inline: false
+          }
+        ],
+        footer: { text: "Shop Dinos ARK • Commande automatique" },
+        timestamp: new Date().toISOString()
+      };
+
+      const payload = {
+        username: "🦖 Shop Dinos ARK",
+        embeds: [embed]
+      };
+
+      try {
+        await fetch(DISCORD_WEBHOOK_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        alert("✅ Commande envoyée !");
+        orderModal.style.display = "none";
+        document.getElementById("discordName").value = "";
+        document.getElementById("extraInfo").value = "";
+      } catch (err) {
+        alert("❌ Erreur lors de l'envoi, vérifie ton webhook.");
+      }
+    });
+
+    // Fermer le modal si on clique dehors
+    window.addEventListener("click", (e) => {
+      if (e.target === orderModal) {
+        orderModal.style.display = "none";
+      }
     });
   </script>
 </body>
