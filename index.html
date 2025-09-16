@@ -11,113 +11,7 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        
-        // Fonction pour afficher les notifications
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.className = `notification ${type}`;
-            notification.innerHTML = `
-                <div class="notification-content">
-                    <span>${message}</span>
-                    <button class="notification-close">&times;</button>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            // Afficher la notification
-            setTimeout(() => {
-                notification.classList.add('show');
-            }, 100);
-            
-            // Fermer automatiquement après 5 secondes
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
-            }, 5000);
-            
-            // Fermer manuellement
-            notification.querySelector('.notification-close').addEventListener('click', () => {
-                notification.classList.remove('show');
-                setTimeout(() => {
-                    if (notification.parentNode) {
-                        document.body.removeChild(notification);
-                    }
-                }, 300);
-            });
         }
-        
-        // Animation de survol améliorée
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-10px) rotateX(5deg)';
-            });
-            
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) rotateX(0deg)';
-            });
-        });
-        
-        // Effet de particules au clic
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.style.position = 'fixed';
-            particle.style.left = x + 'px';
-            particle.style.top = y + 'px';
-            particle.style.width = '6px';
-            particle.style.height = '6px';
-            particle.style.backgroundColor = '#ffd700';
-            particle.style.borderRadius = '50%';
-            particle.style.pointerEvents = 'none';
-            particle.style.zIndex = '1000';
-            document.body.appendChild(particle);
-            
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = 50 + Math.random() * 50;
-            const vx = Math.cos(angle) * velocity;
-            const vy = Math.sin(angle) * velocity;
-            
-            let posX = x;
-            let posY = y;
-            let opacity = 1;
-            
-            const animate = () => {
-                posX += vx * 0.02;
-                posY += vy * 0.02;
-                opacity -= 0.02;
-                
-                particle.style.left = posX + 'px';
-                particle.style.top = posY + 'px';
-                particle.style.opacity = opacity;
-                
-                if (opacity > 0) {
-                    requestAnimationFrame(animate);
-                } else {
-                    document.body.removeChild(particle);
-                }
-            };
-            
-            animate();
-        }
-        
-        // Ajouter l'effet de particules aux clics sur les dinosaures
-        document.querySelectorAll('.dino-item').forEach(item => {
-            item.addEventListener('click', function(e) {
-                for (let i = 0; i < 8; i++) {
-                    setTimeout(() => {
-                        createParticle(
-                            e.clientX + (Math.random() - 0.5) * 40,
-                            e.clientY + (Math.random() - 0.5) * 40
-                        );
-                    }, i * 50);
-                }
-            });
-        });
-    </script>
         
         body {
             background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
@@ -133,23 +27,20 @@
             left: 0;
             width: 100%;
             height: 100%;
-            opacity: 0.3;
+            opacity: 0.1;
             background-image: 
-                radial-gradient(circle at 20% 50%, #ffd700 3px, transparent 3px),
-                radial-gradient(circle at 80% 20%, #ff6b6b 2px, transparent 2px),
-                radial-gradient(circle at 40% 80%, #4ecdc4 2px, transparent 2px),
-                radial-gradient(circle at 60% 70%, #ff69b4 1px, transparent 1px);
-            background-size: 120px 120px, 180px 180px, 220px 220px, 100px 100px;
-            animation: float 15s infinite linear;
+                radial-gradient(circle at 20% 50%, #ffd700 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, #ff6b6b 1px, transparent 1px),
+                radial-gradient(circle at 40% 80%, #4ecdc4 1px, transparent 1px);
+            background-size: 100px 100px, 150px 150px, 200px 200px;
+            animation: float 20s infinite linear;
             z-index: -1;
         }
         
         @keyframes float {
-            0% { transform: translateY(0px) translateX(0px); }
-            25% { transform: translateY(-15px) translateX(5px); }
-            50% { transform: translateY(-30px) translateX(-5px); }
-            75% { transform: translateY(-15px) translateX(5px); }
-            100% { transform: translateY(0px) translateX(0px); }
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
         }
         
         .container {
@@ -674,8 +565,6 @@
 <body>
     <div class="background-pattern"></div>
     
-    <div class="background-pattern"></div>
-    
     <div class="container">
         <div class="header">
             <h1 class="title">SHOP DINOS ARK</h1>
@@ -685,8 +574,6 @@
                 <span>Prix en Vifs d'Or</span>
                 <div class="golden-snitch"></div>
             </div>
-            
-
         </div>
         
         <div class="categories">
@@ -787,7 +674,7 @@
         </div>
         
         <div class="legend">
-            <h3>🔍 Légende des Catégories</h3>
+            <h3>📋 Légende des Catégories</h3>
             <div class="legend-grid">
                 <div class="legend-item">
                     <div class="legend-color petit" style="background-color: #4ecdc4;"></div>
@@ -901,6 +788,40 @@
             }, 300);
         }
         
+        // Fonction pour afficher les notifications
+        function showNotification(message, type) {
+            // Créer l'élément notification
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            
+            const content = document.createElement('div');
+            content.className = 'notification-content';
+            content.innerHTML = `
+                <span>${message}</span>
+                <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
+            `;
+            
+            notification.appendChild(content);
+            document.body.appendChild(notification);
+            
+            // Afficher la notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 10);
+            
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentElement) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+        
         // Gestion du formulaire
         ticketForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -1003,3 +924,6 @@
                 throw new Error('Erreur webhook Discord');
             }
         }
+    </script>
+</body>
+</html>
