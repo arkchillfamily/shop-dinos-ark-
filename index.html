@@ -83,9 +83,10 @@
 
     /* Modal */
     .modal {
-      display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+      display: none; /* caché par défaut */
+      position: fixed; z-index: 1000; left: 0; top: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center;
+      background: rgba(0,0,0,0.8); justify-content: center; align-items: center;
     }
     .modal-content {
       background: #1a1a3e; padding: 2rem;
@@ -104,6 +105,10 @@
       background: linear-gradient(45deg,#ffd700,#ffed4e);
       border: none; border-radius: 15px;
       font-weight: 700; cursor: pointer;
+      margin-top: 0.5rem;
+    }
+    .close-btn {
+      background: red !important;
     }
   </style>
 </head>
@@ -177,7 +182,12 @@
           <label for="additionalInfo">Infos supplémentaires</label>
           <textarea id="additionalInfo" placeholder="Couleurs, niveau, etc."></textarea>
         </div>
+
+        <!-- Lien direct vers ton salon Discord -->
+        <a href="1418346673523916912" target="_blank" class="submit-btn">🔗 Aller ouvrir un ticket privé</a>
+
         <button type="submit" class="submit-btn">Envoyer le Ticket</button>
+        <button type="button" id="fermerModal" class="submit-btn close-btn">❌ Fermer</button>
       </form>
     </div>
   </div>
@@ -218,6 +228,11 @@
       document.getElementById('dinoName').value = panier.map(p => p.name).join(", ");
       document.getElementById('dinoPrice').value = `${total} Vifs d'Or`;
       document.getElementById("ticketModal").style.display = "flex";
+    });
+
+    // Fermer modal
+    document.getElementById("fermerModal").addEventListener("click", () => {
+      document.getElementById("ticketModal").style.display = "none";
     });
 
     // Envoyer ticket
