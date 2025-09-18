@@ -72,11 +72,8 @@
     }
     #panier h3 { margin-bottom: 1rem; color: #ffd700; }
     #panier-list { margin-bottom: 1rem; list-style: none; padding: 0; }
-    .panier-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-    .remove-btn {
-      background: red; border: none; color: white;
-      padding: 2px 6px; border-radius: 5px; cursor: pointer;
-    }
+    #panier-list li { margin-bottom: 0.5rem; display: flex; justify-content: space-between; align-items: center; }
+    .remove-btn { color: red; cursor: pointer; margin-left: 10px; }
     #totalPrix { font-weight: 700; color: #ffd700; margin-bottom: 1rem; display: block; }
     #ouvrirTicketBtn {
       display: none; width: 100%;
@@ -185,10 +182,6 @@
           <label for="additionalInfo">Infos supplémentaires</label>
           <textarea id="additionalInfo" placeholder="Couleurs, niveau, etc."></textarea>
         </div>
-
-        <!-- Lien direct vers ton salon Discord -->
-        <a href="https://discord.com/channels/1202723157845348403/1255528001534300173" target="_blank" class="submit-btn">🔗 Aller ouvrir un ticket privé</a>
-
         <button type="submit" class="submit-btn">Envoyer le Ticket</button>
         <button type="button" id="fermerModal" class="submit-btn close-btn">❌ Fermer</button>
       </form>
@@ -201,6 +194,27 @@
     let panier = [];
     let total = 0;
 
+    function majPanier() {
+      const list = document.getElementById("panier-list");
+      list.innerHTML = "";
+      panier.forEach((p, index) => {
+        let li = document.createElement("li");
+        li.textContent = `${p.name} - ${p.price} Vifs d'Or`;
+        let remove = document.createElement("span");
+        remove.textContent = " ❌";
+        remove.className = "remove-btn";
+        remove.addEventListener("click", () => {
+          total -= p.price;
+          panier.splice(index, 1);
+          majPanier();
+        });
+        li.appendChild(remove);
+        list.appendChild(li);
+      });
+      document.getElementById("totalPrix").textContent = `Total : ${total} Vifs d'Or`;
+      document.getElementById("ouvrirTicketBtn").style.display = panier.length > 0 ? "block" : "none";
+    }
+
     // Ajouter dino au panier
     document.querySelectorAll('.dino-item').forEach(item => {
       item.addEventListener('click', () => {
@@ -208,31 +222,9 @@
         const price = parseInt(item.dataset.price);
         panier.push({ name, price });
         total += price;
-        updatePanier();
+        majPanier();
       });
     });
-
-    // Met à jour le panier
-    function updatePanier() {
-      const list = document.getElementById("panier-list");
-      list.innerHTML = "";
-      panier.forEach((p, index) => {
-        let li = document.createElement("li");
-        li.classList.add("panier-item");
-        li.innerHTML = `${p.name} - ${p.price} Vifs d'Or 
-          <button class="remove-btn" onclick="removeFromPanier(${index})">❌</button>`;
-        list.appendChild(li);
-      });
-      document.getElementById("totalPrix").textContent = `Total : ${total} Vifs d'Or`;
-      document.getElementById("ouvrirTicketBtn").style.display = panier.length > 0 ? "block" : "none";
-    }
-
-    // Retirer un dino du panier
-    function removeFromPanier(index) {
-      total -= panier[index].price;
-      panier.splice(index, 1);
-      updatePanier();
-    }
 
     // Ouvrir modal ticket
     document.getElementById("ouvrirTicketBtn").addEventListener("click", () => {
@@ -255,6 +247,7 @@
         prix: document.getElementById('dinoPrice').value,
         info: document.getElementById('additionalInfo').value
       };
+
       const embed = {
         title: "🎫 Nouveau Ticket - Shop Dinos ARK",
         color: 0xFFD700,
@@ -265,19 +258,40 @@
         ],
         timestamp: new Date().toISOString()
       };
+
       if (data.info) {
         embed.fields.push({ name: "📝 Infos supplémentaires", value: data.info });
       }
+
+      // 🔗 Bouton cliquable dans Discord
+      const components = [
+        {
+          type: 1,
+          components: [
+            {
+              type: 2,
+              label: "📩 Ouvrir un ticket privé",
+              style: 5,
+              url: "https://discord.com/channels/1202723157845348403/1255528001534300173" // <-- remplace ici
+            }
+          ]
+        }
+      ];
+
       try {
         await fetch(DISCORD_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: "🦖 Shop Dinos ARK", embeds: [embed] })
+          body: JSON.stringify({
+            username: "🦖 Shop Dinos ARK",
+            embeds: [embed],
+            components: components
+          })
         });
         alert("✅ Ticket envoyé avec succès !");
         panier = [];
         total = 0;
-        updatePanier();
+        majPanier();
         document.getElementById("ticketModal").style.display = "none";
       } catch (err) {
         alert("❌ Erreur d'envoi, vérifie ton webhook.");
