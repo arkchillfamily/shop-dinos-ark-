@@ -71,7 +71,12 @@
       background: rgba(255,215,0,0.1);
     }
     #panier h3 { margin-bottom: 1rem; color: #ffd700; }
-    #panier-list { margin-bottom: 1rem; }
+    #panier-list { margin-bottom: 1rem; list-style: none; padding: 0; }
+    .panier-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+    .remove-btn {
+      background: red; border: none; color: white;
+      padding: 2px 6px; border-radius: 5px; cursor: pointer;
+    }
     #totalPrix { font-weight: 700; color: #ffd700; margin-bottom: 1rem; display: block; }
     #ouvrirTicketBtn {
       display: none; width: 100%;
@@ -107,9 +112,7 @@
       font-weight: 700; cursor: pointer;
       margin-top: 0.5rem;
     }
-    .close-btn {
-      background: red !important;
-    }
+    .close-btn { background: red !important; }
   </style>
 </head>
 <body>
@@ -184,7 +187,7 @@
         </div>
 
         <!-- Lien direct vers ton salon Discord -->
-        <a href="1418346673523916912" target="_blank" class="submit-btn">🔗 Aller ouvrir un ticket privé</a>
+        <a href="https://discord.com/channels/1202723157845348403/1255528001534300173" target="_blank" class="submit-btn">🔗 Aller ouvrir un ticket privé</a>
 
         <button type="submit" class="submit-btn">Envoyer le Ticket</button>
         <button type="button" id="fermerModal" class="submit-btn close-btn">❌ Fermer</button>
@@ -193,7 +196,6 @@
   </div>
 
   <script>
-    // 🔗 Remplace ici par ton webhook
     const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo";
 
     let panier = [];
@@ -206,22 +208,31 @@
         const price = parseInt(item.dataset.price);
         panier.push({ name, price });
         total += price;
-
-        // Afficher panier
-        const list = document.getElementById("panier-list");
-        list.innerHTML = "";
-        panier.forEach(p => {
-          let li = document.createElement("li");
-          li.textContent = `${p.name} - ${p.price} Vifs d'Or`;
-          list.appendChild(li);
-        });
-
-        document.getElementById("totalPrix").textContent = `Total : ${total} Vifs d'Or`;
-
-        // Afficher bouton ticket
-        document.getElementById("ouvrirTicketBtn").style.display = "block";
+        updatePanier();
       });
     });
+
+    // Met à jour le panier
+    function updatePanier() {
+      const list = document.getElementById("panier-list");
+      list.innerHTML = "";
+      panier.forEach((p, index) => {
+        let li = document.createElement("li");
+        li.classList.add("panier-item");
+        li.innerHTML = `${p.name} - ${p.price} Vifs d'Or 
+          <button class="remove-btn" onclick="removeFromPanier(${index})">❌</button>`;
+        list.appendChild(li);
+      });
+      document.getElementById("totalPrix").textContent = `Total : ${total} Vifs d'Or`;
+      document.getElementById("ouvrirTicketBtn").style.display = panier.length > 0 ? "block" : "none";
+    }
+
+    // Retirer un dino du panier
+    function removeFromPanier(index) {
+      total -= panier[index].price;
+      panier.splice(index, 1);
+      updatePanier();
+    }
 
     // Ouvrir modal ticket
     document.getElementById("ouvrirTicketBtn").addEventListener("click", () => {
@@ -266,9 +277,7 @@
         alert("✅ Ticket envoyé avec succès !");
         panier = [];
         total = 0;
-        document.getElementById("panier-list").innerHTML = "";
-        document.getElementById("totalPrix").textContent = "Total : 0 Vifs d'Or";
-        document.getElementById("ouvrirTicketBtn").style.display = "none";
+        updatePanier();
         document.getElementById("ticketModal").style.display = "none";
       } catch (err) {
         alert("❌ Erreur d'envoi, vérifie ton webhook.");
