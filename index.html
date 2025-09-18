@@ -6,7 +6,7 @@
   <title>Shop Dinos ARK</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
-    
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 50%, #2d1b4e 100%);
@@ -16,93 +16,105 @@
       overflow-x: hidden;
     }
 
+    nav {
+      background: rgba(0,0,0,0.6);
+      padding: 1rem;
+      border-bottom: 2px solid #ffd700;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    nav a { color: #ffd700; text-decoration: none; font-weight: 700; font-size: 1.1rem; }
+    nav a:hover { color: #fff; }
+
     .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
     .header { text-align: center; margin-bottom: 3rem; }
     .title {
-      font-size: 3.5rem;
-      font-weight: 900;
+      font-size: 3rem; font-weight: 900;
       background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
-      animation: glow 2s ease-in-out infinite alternate;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px rgba(255,215,0,0.5);
     }
-    @keyframes glow {
-      from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-      to { text-shadow: 0 0 40px rgba(255, 215, 0, 0.8), 0 0 60px rgba(255, 215, 0, 0.4); }
-    }
-    .subtitle { font-size: 1.2rem; color: #a0a0ff; margin-bottom: 2rem; }
+    .subtitle { font-size: 1.2rem; color: #a0a0ff; margin-top: 1rem; }
 
-    .categories {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 2rem;
-    }
+    .categories { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 2rem; }
+
     .category-card {
-      background: linear-gradient(135deg, rgba(26, 26, 62, 0.8), rgba(45, 27, 78, 0.6));
+      background: rgba(255,255,255,0.05);
       border-radius: 20px; padding: 2rem;
-      backdrop-filter: blur(10px);
       transition: all 0.3s ease;
     }
-    .category-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
-    .category-title { text-align: center; font-size: 1.8rem; margin-bottom: 1.5rem; }
+    .category-card:hover { transform: translateY(-10px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
 
-    .dino-list { display: flex; flex-direction: column; gap: 1rem; }
+    .category-title { font-size: 1.8rem; margin-bottom: 1rem; text-align: center; color: #ffd700; }
+
     .dino-item {
       display: flex; justify-content: space-between; align-items: center;
-      padding: 1rem 1.5rem;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 15px;
-      cursor: pointer;
+      background: rgba(255,255,255,0.05);
+      padding: 1rem; border-radius: 15px;
+      cursor: pointer; margin-bottom: 0.8rem;
       transition: all 0.3s ease;
     }
-    .dino-item:hover { background: rgba(255,255,255,0.1); transform: translateX(10px); }
+    .dino-item:hover { background: rgba(255,255,255,0.15); transform: translateX(8px); }
+
     .dino-name { font-weight: 600; }
     .dino-price { font-weight: 700; color: #ffd700; }
 
+    /* Panier */
+    #panier {
+      margin: 2rem 0; padding: 1rem;
+      border: 2px solid #ffd700;
+      border-radius: 15px;
+      background: rgba(255,215,0,0.1);
+    }
+    #panier h3 { margin-bottom: 1rem; color: #ffd700; }
+    #panier-list { margin-bottom: 1rem; }
+    #totalPrix { font-weight: 700; color: #ffd700; margin-bottom: 1rem; display: block; }
+    #ouvrirTicketBtn {
+      display: none; width: 100%;
+      padding: 1rem;
+      background: linear-gradient(45deg,#ffd700,#ffed4e);
+      border: none; border-radius: 15px;
+      font-weight: 700; cursor: pointer;
+    }
+
     /* Modal */
     .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
+      display: none; position: fixed; z-index: 1000; left: 0; top: 0;
       width: 100%; height: 100%;
-      background: rgba(0,0,0,0.8);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 200;
+      background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center;
     }
     .modal-content {
-      background: #1a1a3e;
-      padding: 2rem;
-      border-radius: 15px;
-      width: 400px;
-      text-align: center;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      background: #1a1a3e; padding: 2rem;
+      border-radius: 15px; width: 90%; max-width: 500px;
+      border: 2px solid #ffd700;
     }
-    .modal h2 { margin-bottom: 1rem; }
-    .modal input, .modal textarea {
-      width: 100%;
-      padding: 0.8rem;
-      margin-bottom: 1rem;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Orbitron', monospace;
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; margin-bottom: 0.3rem; color: #ffd700; }
+    .form-group input, .form-group textarea {
+      width: 100%; padding: 0.8rem;
+      border: 1px solid #ffd700; border-radius: 10px;
+      background: rgba(255,255,255,0.1); color: #fff;
     }
-    .modal button {
-      background: #ffd700;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    .modal button:hover {
-      background: #e6c200;
+    .submit-btn {
+      width: 100%; padding: 1rem;
+      background: linear-gradient(45deg,#ffd700,#ffed4e);
+      border: none; border-radius: 15px;
+      font-weight: 700; cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <nav>
+    <a href="#home">Accueil</a>
+    <a href="#shop">Shop</a>
+    <a href="#tickets">Tickets</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
   <div class="container" id="home">
     <div class="header">
       <h1 class="title">SHOP DINOS ARK</h1>
@@ -110,117 +122,141 @@
     </div>
 
     <div class="categories" id="shop">
-      <!-- Dinos 225 -->
+      <!-- 225 -->
       <div class="category-card">
         <h2 class="category-title">Dinos Level 225</h2>
-        <div class="dino-list">
-          <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="500 Vifs d'Or"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">500</span></div>
-          <div class="dino-item" data-name="🦕 Moyen" data-price="750 Vifs d'Or"><span class="dino-name">🦕 Moyen</span><span class="dino-price">750</span></div>
-          <div class="dino-item" data-name="🐉 Spécial" data-price="1500 Vifs d'Or"><span class="dino-name">🐉 Spécial</span><span class="dino-price">1500</span></div>
-        </div>
+        <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="500"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">500</span></div>
+        <div class="dino-item" data-name="🦕 Moyen" data-price="750"><span class="dino-name">🦕 Moyen</span><span class="dino-price">750</span></div>
+        <div class="dino-item" data-name="🐉 Spécial" data-price="1500"><span class="dino-name">🐉 Spécial</span><span class="dino-price">1500</span></div>
       </div>
-      <!-- Dinos 450 -->
+      <!-- 450 -->
       <div class="category-card">
         <h2 class="category-title">Dinos Level 450</h2>
-        <div class="dino-list">
-          <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="750 Vifs d'Or"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">750</span></div>
-          <div class="dino-item" data-name="🦕 Moyen" data-price="1000 Vifs d'Or"><span class="dino-name">🦕 Moyen</span><span class="dino-price">1000</span></div>
-          <div class="dino-item" data-name="🐉 Spécial" data-price="2000 Vifs d'Or"><span class="dino-name">🐉 Spécial</span><span class="dino-price">2000</span></div>
-          <div class="dino-item" data-name="💀 Moros" data-price="3000 Vifs d'Or"><span class="dino-name">💀 Moros</span><span class="dino-price">3000</span></div>
-        </div>
+        <div class="dino-item" data-name="🦖 Petit / Épaule" data-price="750"><span class="dino-name">🦖 Petit / Épaule</span><span class="dino-price">750</span></div>
+        <div class="dino-item" data-name="🦕 Moyen" data-price="1000"><span class="dino-name">🦕 Moyen</span><span class="dino-price">1000</span></div>
+        <div class="dino-item" data-name="🐉 Spécial" data-price="2000"><span class="dino-name">🐉 Spécial</span><span class="dino-price">2000</span></div>
+        <div class="dino-item" data-name="💀 Moros" data-price="3000"><span class="dino-name">💀 Moros</span><span class="dino-price">3000</span></div>
       </div>
-      <!-- Dinos Shiny -->
+      <!-- Shiny -->
       <div class="category-card">
         <h2 class="category-title">Dinos Shiny ✨</h2>
-        <div class="dino-list">
-          <div class="dino-item" data-name="🦖✨ Petit / Épaule" data-price="1000 Vifs d'Or"><span class="dino-name">🦖✨ Petit / Épaule</span><span class="dino-price">1000</span></div>
-          <div class="dino-item" data-name="🦕✨ Moyen" data-price="2000 Vifs d'Or"><span class="dino-name">🦕✨ Moyen</span><span class="dino-price">2000</span></div>
-          <div class="dino-item" data-name="🐉✨ Spécial" data-price="3000 Vifs d'Or"><span class="dino-name">🐉✨ Spécial</span><span class="dino-price">3000</span></div>
-          <div class="dino-item" data-name="💀✨ Moros" data-price="4000 Vifs d'Or"><span class="dino-name">💀✨ Moros</span><span class="dino-price">4000</span></div>
-        </div>
+        <div class="dino-item" data-name="🦖✨ Petit / Épaule" data-price="1000"><span class="dino-name">🦖✨ Petit / Épaule</span><span class="dino-price">1000</span></div>
+        <div class="dino-item" data-name="🦕✨ Moyen" data-price="2000"><span class="dino-name">🦕✨ Moyen</span><span class="dino-price">2000</span></div>
+        <div class="dino-item" data-name="🐉✨ Spécial" data-price="3000"><span class="dino-name">🐉✨ Spécial</span><span class="dino-price">3000</span></div>
+        <div class="dino-item" data-name="💀✨ Moros" data-price="4000"><span class="dino-name">💀✨ Moros</span><span class="dino-price">4000</span></div>
       </div>
+    </div>
+
+    <!-- Panier -->
+    <div id="panier">
+      <h3>🛒 Votre panier</h3>
+      <ul id="panier-list"></ul>
+      <span id="totalPrix">Total : 0 Vifs d'Or</span>
+      <button id="ouvrirTicketBtn">📩 Ouvrir un ticket</button>
     </div>
   </div>
 
-  <!-- Modal pour pseudo et info -->
-  <div class="modal" id="orderModal">
+  <!-- Modal -->
+  <div id="ticketModal" class="modal">
     <div class="modal-content">
-      <h2>Finaliser votre commande</h2>
-      <input type="text" id="discordName" placeholder="Votre pseudo Discord (ex: Joueur#1234)" required>
-      <textarea id="extraInfo" placeholder="Infos complémentaires (facultatif)"></textarea>
-      <button id="submitOrder">Envoyer la commande</button>
+      <h2>🎫 Créer un Ticket</h2>
+      <form id="ticketForm">
+        <div class="form-group">
+          <label for="discordName">Nom Discord</label>
+          <input type="text" id="discordName" required placeholder="Pseudo#1234">
+        </div>
+        <div class="form-group">
+          <label for="dinoName">Dinos choisis</label>
+          <input type="text" id="dinoName" readonly>
+        </div>
+        <div class="form-group">
+          <label for="dinoPrice">Prix total</label>
+          <input type="text" id="dinoPrice" readonly>
+        </div>
+        <div class="form-group">
+          <label for="additionalInfo">Infos supplémentaires</label>
+          <textarea id="additionalInfo" placeholder="Couleurs, niveau, etc."></textarea>
+        </div>
+        <button type="submit" class="submit-btn">Envoyer le Ticket</button>
+      </form>
     </div>
   </div>
 
   <script>
-    // Ton webhook Discord (remplace par le tien)
-    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1417598554595262475/iShmG7XTi_Fcyf2LnzphS38blc5BDQzaHxU6neJtGZ10i2D_XBjh78E0eWsmALcFCJq2";
-    const orderModal = document.getElementById("orderModal");
-    const submitOrderBtn = document.getElementById("submitOrder");
+    // 🔗 Remplace ici par ton webhook
+    const DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1416901654132822157/utEGLOc5vqYqgP9pEmRS4QZlI48fWwo96eHSiEOkkOU5DuQW83edGjz6qG-v_krYOjOo";
 
-    let selectedDino = null;
+    let panier = [];
+    let total = 0;
 
+    // Ajouter dino au panier
     document.querySelectorAll('.dino-item').forEach(item => {
       item.addEventListener('click', () => {
-        selectedDino = {
-          name: item.dataset.name,
-          price: item.dataset.price
-        };
-        orderModal.style.display = "flex";
+        const name = item.dataset.name;
+        const price = parseInt(item.dataset.price);
+        panier.push({ name, price });
+        total += price;
+
+        // Afficher panier
+        const list = document.getElementById("panier-list");
+        list.innerHTML = "";
+        panier.forEach(p => {
+          let li = document.createElement("li");
+          li.textContent = `${p.name} - ${p.price} Vifs d'Or`;
+          list.appendChild(li);
+        });
+
+        document.getElementById("totalPrix").textContent = `Total : ${total} Vifs d'Or`;
+
+        // Afficher bouton ticket
+        document.getElementById("ouvrirTicketBtn").style.display = "block";
       });
     });
 
-    submitOrderBtn.addEventListener("click", async () => {
-      const discordName = document.getElementById("discordName").value.trim();
-      const extraInfo = document.getElementById("extraInfo").value.trim();
+    // Ouvrir modal ticket
+    document.getElementById("ouvrirTicketBtn").addEventListener("click", () => {
+      document.getElementById('dinoName').value = panier.map(p => p.name).join(", ");
+      document.getElementById('dinoPrice').value = `${total} Vifs d'Or`;
+      document.getElementById("ticketModal").style.display = "flex";
+    });
 
-      if (!discordName) {
-        alert("Merci d'entrer votre pseudo Discord.");
-        return;
-      }
-
+    // Envoyer ticket
+    document.getElementById("ticketForm").addEventListener("submit", async e => {
+      e.preventDefault();
+      const data = {
+        discordName: document.getElementById('discordName').value,
+        dinos: document.getElementById('dinoName').value,
+        prix: document.getElementById('dinoPrice').value,
+        info: document.getElementById('additionalInfo').value
+      };
       const embed = {
-        title: "🦖 Nouvelle commande - Shop Dinos ARK",
+        title: "🎫 Nouveau Ticket - Shop Dinos ARK",
         color: 0xFFD700,
         fields: [
-          { name: "🎮 Joueur", value: discordName, inline: false },
-          { name: "🦖 Dinosaure", value: selectedDino.name, inline: true },
-          { name: "💰 Prix", value: selectedDino.price, inline: true },
-          { name: "📝 Infos complémentaires", value: extraInfo || "Aucune", inline: false },
-          {
-            name: "📩 Ouvrir un ticket",
-            value: "[Cliquez ici pour ouvrir un ticket privé](https://discord.com/channels/1202723157845348403/1417623179588800585)",
-            inline: false
-          }
+          { name: "🎮 Joueur", value: data.discordName },
+          { name: "🦖 Dinos", value: data.dinos },
+          { name: "💰 Prix Total", value: data.prix }
         ],
-        footer: { text: "Shop Dinos ARK • Commande automatique" },
         timestamp: new Date().toISOString()
       };
-
-      const payload = {
-        username: "🦖 Shop Dinos ARK",
-        embeds: [embed]
-      };
-
+      if (data.info) {
+        embed.fields.push({ name: "📝 Infos supplémentaires", value: data.info });
+      }
       try {
         await fetch(DISCORD_WEBHOOK_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify({ username: "🦖 Shop Dinos ARK", embeds: [embed] })
         });
-        alert("✅ Commande envoyée !");
-        orderModal.style.display = "none";
-        document.getElementById("discordName").value = "";
-        document.getElementById("extraInfo").value = "";
+        alert("✅ Ticket envoyé avec succès !");
+        panier = [];
+        total = 0;
+        document.getElementById("panier-list").innerHTML = "";
+        document.getElementById("totalPrix").textContent = "Total : 0 Vifs d'Or";
+        document.getElementById("ouvrirTicketBtn").style.display = "none";
+        document.getElementById("ticketModal").style.display = "none";
       } catch (err) {
-        alert("❌ Erreur lors de l'envoi, vérifie ton webhook.");
-      }
-    });
-
-    // Fermer le modal si on clique dehors
-    window.addEventListener("click", (e) => {
-      if (e.target === orderModal) {
-        orderModal.style.display = "none";
+        alert("❌ Erreur d'envoi, vérifie ton webhook.");
       }
     });
   </script>
