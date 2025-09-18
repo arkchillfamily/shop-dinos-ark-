@@ -78,14 +78,14 @@
     #ouvrirTicketBtn {
       display: none; width: 100%;
       padding: 1rem;
-      background: linear-gradient(45deg,#ffd700,#ffed4e);
+      background: linear-gradient(45deg,#00c851,#33d96c);
       border: none; border-radius: 15px;
       font-weight: 700; cursor: pointer;
     }
 
     /* Modal */
     .modal {
-      display: none; /* caché par défaut */
+      display: none;
       position: fixed; z-index: 1000; left: 0; top: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.8); justify-content: center; align-items: center;
@@ -157,14 +157,14 @@
       <h3>🛒 Votre panier</h3>
       <ul id="panier-list"></ul>
       <span id="totalPrix">Total : 0 Vifs d'Or</span>
-      <button id="ouvrirTicketBtn">📩 Ouvrir un ticket</button>
+      <button id="ouvrirTicketBtn">✅ Valider le panier</button>
     </div>
   </div>
 
   <!-- Modal -->
   <div id="ticketModal" class="modal">
     <div class="modal-content">
-      <h2>🎫 Créer un Ticket</h2>
+      <h2>🎫 Valider la commande</h2>
       <form id="ticketForm">
         <div class="form-group">
           <label for="discordName">Nom Discord</label>
@@ -182,7 +182,7 @@
           <label for="additionalInfo">Infos supplémentaires</label>
           <textarea id="additionalInfo" placeholder="Couleurs, niveau, etc."></textarea>
         </div>
-        <button type="submit" class="submit-btn">Envoyer le Ticket</button>
+        <button type="submit" class="submit-btn">Envoyer la commande</button>
         <button type="button" id="fermerModal" class="submit-btn close-btn">❌ Fermer</button>
       </form>
     </div>
@@ -215,7 +215,6 @@
       document.getElementById("ouvrirTicketBtn").style.display = panier.length > 0 ? "block" : "none";
     }
 
-    // Ajouter dino au panier
     document.querySelectorAll('.dino-item').forEach(item => {
       item.addEventListener('click', () => {
         const name = item.dataset.name;
@@ -226,19 +225,16 @@
       });
     });
 
-    // Ouvrir modal ticket
     document.getElementById("ouvrirTicketBtn").addEventListener("click", () => {
       document.getElementById('dinoName').value = panier.map(p => p.name).join(", ");
       document.getElementById('dinoPrice').value = `${total} Vifs d'Or`;
       document.getElementById("ticketModal").style.display = "flex";
     });
 
-    // Fermer modal
     document.getElementById("fermerModal").addEventListener("click", () => {
       document.getElementById("ticketModal").style.display = "none";
     });
 
-    // Envoyer ticket
     document.getElementById("ticketForm").addEventListener("submit", async e => {
       e.preventDefault();
       const data = {
@@ -249,7 +245,7 @@
       };
 
       const embed = {
-        title: "🎫 Nouveau Ticket - Shop Dinos ARK",
+        title: "🎫 Nouvelle commande - Shop Dinos ARK",
         color: 0xFFD700,
         fields: [
           { name: "🎮 Joueur", value: data.discordName },
@@ -263,7 +259,6 @@
         embed.fields.push({ name: "📝 Infos supplémentaires", value: data.info });
       }
 
-      // 🔗 Bouton cliquable dans Discord
       const components = [
         {
           type: 1,
@@ -272,7 +267,7 @@
               type: 2,
               label: "📩 Ouvrir un ticket privé",
               style: 5,
-              url: "https://discord.com/channels/1202723157845348403/1255528001534300173" // <-- remplace ici
+              url: "https://discord.com/channels/1202723157845348403/1255528001534300173" // ⚡ Remplace par tes vrais IDs
             }
           ]
         }
@@ -288,7 +283,7 @@
             components: components
           })
         });
-        alert("✅ Ticket envoyé avec succès !");
+        alert("✅ Commande envoyée avec succès !");
         panier = [];
         total = 0;
         majPanier();
